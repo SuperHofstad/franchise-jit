@@ -1,0 +1,10 @@
+services:
+  franchise-jit:
+    image: phofstad/franchise-jit:latest
+    container_name: franchise-jit
+    ports:
+      - "3005:3005"
+    volumes:
+      - ./config:/config
+    env_file: .env
+    restart: unless-stopped
