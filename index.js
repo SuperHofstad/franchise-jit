@@ -408,98 +408,118 @@ async function deleteWatchedMedia(meta) {
     }
 }
 
-// --- Webhook Route ---
+app.use(express.json());
+
+// --- Core Playback Logic ---
+async function handlePlaybackEvent(meta, accountTitle, source = 'Webhook') {
+    const plexUser = process.env.PLEX_USER;
+    if (plexUser && accountTitle && accountTitle.toLowerCase() !== plexUser.toLowerCase()) {
+        console.log(`[${source}] Ignored: Watched by user '${accountTitle}', but PLEX_USER is set to '${plexUser}'.`);
+        return;
+    }
+
+    const watchedTitle = meta.type === 'episode' ? meta.grandparentTitle : meta.title;
+    let searchTitle = watchedTitle;
+    if (meta.type === 'episode' && meta.parentIndex) {
+        searchTitle = `${watchedTitle} Season ${meta.parentIndex}`;
+    }
+
+    console.log(`[${source}] User finished watching: ${searchTitle}`);
+
+    await deleteWatchedMedia(meta);
+
+    let matched = false;
+    for (const timelineObj of loadedTimelines) {
+        const timeline = timelineObj.data;
+        let index = -1;
+
+        for (let i = 0; i < timeline.length; i++) {
+            const t = timeline[i];
+
+            if (t.type === 'movie' && meta.type === 'movie' && t.title.toLowerCase() === watchedTitle.toLowerCase()) {
+                index = i;
+                break;
+            } else if (t.type === 'show' && meta.type === 'episode') {
+                const titleMatches = t.title.toLowerCase() === watchedTitle.toLowerCase() || t.title.toLowerCase() === searchTitle.toLowerCase();
+                const seasonMatches = t.season === meta.parentIndex;
+
+                if (titleMatches && seasonMatches) {
+                    if (t.episodes && Array.isArray(t.episodes)) {
+                        // Only progress the timeline if they watched the LAST episode in this block
+                        const lastEpisodeInBlock = t.episodes[t.episodes.length - 1];
+                        if (meta.index === lastEpisodeInBlock) {
+                            index = i;
+                            break;
+                        }
+                    } else {
+                        // If no episodes array, it's a full season block. Progress on any episode watch (relying on idempotency).
+                        index = i;
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (index !== -1) {
+            console.log(`[Timeline] Match found in ${timelineObj.name} at index ${index}`);
+            matched = true;
+
+            const lookAheadItems = [];
+            if (timeline[index + 1]) lookAheadItems.push(timeline[index + 1]);
+            if (timeline[index + 2]) lookAheadItems.push(timeline[index + 2]);
+
+            for (const item of lookAheadItems) {
+                if (item.type === 'movie') {
+                    await dispatchRadarr(item);
+                } else if (item.type === 'show') {
+                    await dispatchSonarr(item);
+                }
+            }
+            break;
+        }
+    }
+
+    if (!matched) {
+        console.log(`[Timeline] ${searchTitle} not found in any loaded custom timelines.`);
+    }
+
+    // Attempt Kometa Trigger
+    if (matched && enableKometa) {
+        console.log(`[JIT] Triggering Kometa Webhook...`);
+        axios.post(kometaUrl).catch(e => {
+            console.log(`[Kometa] Webhook failed (Kometa may be offline or URL is incorrect): ${e.message}`);
+        });
+    }
+}
+
+// --- Webhook Routes ---
+
+// Native Plex Webhook (Requires Plex Pass)
 app.post('/webhook', upload.none(), async (req, res) => {
     res.status(200).send('OK');
 
     try {
         if (!req.body || !req.body.payload) return;
-
         const payload = JSON.parse(req.body.payload);
 
-        const plexUser = process.env.PLEX_USER;
-        if (plexUser && payload.Account && payload.Account.title && payload.Account.title.toLowerCase() !== plexUser.toLowerCase()) {
-            console.log(`[Webhook] Ignored: Watched by user '${payload.Account.title}', but PLEX_USER is set to '${plexUser}'.`);
-            return;
-        }
-
         if (payload.event === 'media.scrobble') {
-            const meta = payload.Metadata;
-            const watchedTitle = meta.type === 'episode' ? meta.grandparentTitle : meta.title;
-            let searchTitle = watchedTitle;
-            if (meta.type === 'episode' && meta.parentIndex) {
-                searchTitle = `${watchedTitle} Season ${meta.parentIndex}`;
-            }
-
-            console.log(`[Webhook] User finished watching: ${searchTitle}`);
-
-            await deleteWatchedMedia(meta);
-
-            let matched = false;
-            for (const timelineObj of loadedTimelines) {
-                const timeline = timelineObj.data;
-                let index = -1;
-
-                for (let i = 0; i < timeline.length; i++) {
-                    const t = timeline[i];
-
-                    if (t.type === 'movie' && meta.type === 'movie' && t.title.toLowerCase() === watchedTitle.toLowerCase()) {
-                        index = i;
-                        break;
-                    } else if (t.type === 'show' && meta.type === 'episode') {
-                        const titleMatches = t.title.toLowerCase() === watchedTitle.toLowerCase() || t.title.toLowerCase() === searchTitle.toLowerCase();
-                        const seasonMatches = t.season === meta.parentIndex;
-
-                        if (titleMatches && seasonMatches) {
-                            if (t.episodes && Array.isArray(t.episodes)) {
-                                // Only progress the timeline if they watched the LAST episode in this block
-                                const lastEpisodeInBlock = t.episodes[t.episodes.length - 1];
-                                if (meta.index === lastEpisodeInBlock) {
-                                    index = i;
-                                    break;
-                                }
-                            } else {
-                                // If no episodes array, it's a full season block. Progress on any episode watch (relying on idempotency).
-                                index = i;
-                                break;
-                            }
-                        }
-                    }
-                }
-
-                if (index !== -1) {
-                    console.log(`[Timeline] Match found in ${timelineObj.name} at index ${index}`);
-                    matched = true;
-
-                    const lookAheadItems = [];
-                    if (timeline[index + 1]) lookAheadItems.push(timeline[index + 1]);
-                    if (timeline[index + 2]) lookAheadItems.push(timeline[index + 2]);
-
-                    for (const item of lookAheadItems) {
-                        if (item.type === 'movie') {
-                            await dispatchRadarr(item);
-                        } else if (item.type === 'show') {
-                            await dispatchSonarr(item);
-                        }
-                    }
-                    break;
-                }
-            }
-
-            if (!matched) {
-                console.log(`[Timeline] ${searchTitle} not found in any loaded custom timelines.`);
-            }
-
-            // Attempt Kometa Trigger
-            if (matched && enableKometa) {
-                console.log(`[JIT] Triggering Kometa Webhook...`);
-                axios.post(kometaUrl).catch(e => {
-                    console.log(`[Kometa] Webhook failed (Kometa may be offline or URL is incorrect): ${e.message}`);
-                });
-            }
+            await handlePlaybackEvent(payload.Metadata, payload.Account ? payload.Account.title : null, 'Plex');
         }
     } catch (err) {
-        console.error("Webhook processing error:", err.message);
+        console.error("Plex Webhook processing error:", err.message);
+    }
+});
+
+// Tautulli Webhook (Alternative for non-Plex Pass users)
+app.post('/tautulli', async (req, res) => {
+    res.status(200).send('OK');
+
+    try {
+        const payload = req.body;
+        // Tautulli sends 'watched' or we can make it flexible
+        await handlePlaybackEvent(payload, payload.user, 'Tautulli');
+    } catch (err) {
+        console.error("Tautulli Webhook processing error:", err.message);
     }
 });
 

@@ -27,7 +27,7 @@ If you are setting up an automated media server, you run into two massive proble
 
 ## 🛠 Prerequisites
 
-- **Plex Pass:** Required to send webhooks out from Plex.
+- **Plex Pass OR Tautulli:** Required to send playback notifications to the Daemon.
 - **Radarr & Sonarr:** Installed and accessible via API.
 - **Docker:** To run this daemon.
 
@@ -122,14 +122,39 @@ When the Daemon boots up, it will fetch these Trakt lists, intelligently group t
 
 ## 🔌 Connecting to Plex
 
-For the Daemon to know when you finish watching something, you must configure a webhook in Plex.
+For the Daemon to know when you finish watching something, you must configure a webhook.
+
+### Option A: Plex Webhooks (Requires Plex Pass)
 
 1. Go to **Plex Web UI** > Settings > Webhooks.
 2. Click **Add Webhook**.
-3. Enter the URL of the machine running Franchise-JIT: `http://<YOUR_DOCKER_IP>:3005/webhook`.
+3. Enter the URL: `http://<YOUR_DOCKER_IP>:3005/webhook`.
 4. Click Save.
 
-Now, whenever you finish watching a movie or episode, Plex will ping the Daemon, the Daemon will check your timelines, and your media will sync magically!
+### Option B: Tautulli (No Plex Pass Required)
+
+If you don't have Plex Pass, you can use [Tautulli](https://tautulli.com/) to trigger the sync.
+
+1. In Tautulli, go to **Settings** > **Notification Agents**.
+2. Click **Add a new notification agent** > **Webhook**.
+3. **Webhook URL:** `http://<YOUR_DOCKER_IP>:3005/tautulli`
+4. **HTTP Method:** `POST`
+5. **Trigger:** Check `Watched` (under Playback Notifications).
+6. **Data** (JSON): Paste the following into the **JSON Body** under the **Watched** tab:
+   ```json
+   {
+     "event": "watched",
+     "user": "{user}",
+     "type": "{media_type}",
+     "title": "{title}",
+     "grandparentTitle": "{show_name}",
+     "parentIndex": {season_num},
+     "index": {episode_num}
+   }
+   ```
+7. Click **Save**.
+
+Now, whenever you finish watching a movie or episode, the Daemon will be notified!
 
 ## 🛡️ Safety & Advanced Features
 

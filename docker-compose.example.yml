@@ -3,7 +3,7 @@ services:
     image: phofstad/franchise-jit:latest
     container_name: franchise-jit
     ports:
-      - "3005:3005"
+      - "3005:3005" # Webhook/Tautulli listener port
     volumes:
       - ./config:/config
     env_file: .env
