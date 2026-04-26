@@ -1,36 +1,195 @@
 [
-  { "title": "Star Wars: Episode I - The Phantom Menace", "type": "movie", "tmdbId": 1893 },
-  { "title": "Star Wars: Episode II - Attack of the Clones", "type": "movie", "tmdbId": 1894 },
-  { "title": "Star Wars: The Clone Wars Season 1", "type": "show", "tvdbId": 83268, "season": 1 },
-  { "title": "Star Wars: The Clone Wars Season 2", "type": "show", "tvdbId": 83268, "season": 2 },
-  { "title": "Star Wars: The Clone Wars Season 3", "type": "show", "tvdbId": 83268, "season": 3 },
-  { "title": "Star Wars: The Clone Wars Season 4", "type": "show", "tvdbId": 83268, "season": 4 },
-  { "title": "Star Wars: The Clone Wars Season 5", "type": "show", "tvdbId": 83268, "season": 5 },
-  { "title": "Star Wars: The Clone Wars Season 6", "type": "show", "tvdbId": 83268, "season": 6 },
-  { "title": "Star Wars: The Clone Wars Season 7", "type": "show", "tvdbId": 83268, "season": 7 },
-  { "title": "Star Wars: Episode III - Revenge of the Sith", "type": "movie", "tmdbId": 1895 },
-  { "title": "Star Wars: The Bad Batch Season 1", "type": "show", "tvdbId": 114469, "season": 1 },
-  { "title": "Star Wars: The Bad Batch Season 2", "type": "show", "tvdbId": 114469, "season": 2 },
-  { "title": "Star Wars: The Bad Batch Season 3", "type": "show", "tvdbId": 114469, "season": 3 },
-  { "title": "Solo: A Star Wars Story", "type": "movie", "tmdbId": 348350 },
-  { "title": "Obi-Wan Kenobi Season 1", "type": "show", "tvdbId": 114461, "season": 1 },
-  { "title": "Star Wars Rebels Season 1", "type": "show", "tvdbId": 283462, "season": 1 },
-  { "title": "Star Wars Rebels Season 2", "type": "show", "tvdbId": 283462, "season": 2 },
-  { "title": "Star Wars Rebels Season 3", "type": "show", "tvdbId": 283462, "season": 3 },
-  { "title": "Star Wars Rebels Season 4", "type": "show", "tvdbId": 283462, "season": 4 },
-  { "title": "Andor Season 1", "type": "show", "tvdbId": 382686, "season": 1 },
-  { "title": "Rogue One: A Star Wars Story", "type": "movie", "tmdbId": 330459 },
-  { "title": "Star Wars: Episode IV - A New Hope", "type": "movie", "tmdbId": 11 },
-  { "title": "Star Wars: Episode V - The Empire Strikes Back", "type": "movie", "tmdbId": 1891 },
-  { "title": "Star Wars: Episode VI - Return of the Jedi", "type": "movie", "tmdbId": 1892 },
-  { "title": "The Mandalorian Season 1", "type": "show", "tvdbId": 362036, "season": 1 },
-  { "title": "The Mandalorian Season 2", "type": "show", "tvdbId": 362036, "season": 2 },
-  { "title": "The Book of Boba Fett Season 1", "type": "show", "tvdbId": 393236, "season": 1 },
-  { "title": "The Mandalorian Season 3", "type": "show", "tvdbId": 362036, "season": 3 },
-  { "title": "Ahsoka Season 1", "type": "show", "tvdbId": 393239, "season": 1 },
-  { "title": "Star Wars Resistance Season 1", "type": "show", "tvdbId": 347428, "season": 1 },
-  { "title": "Star Wars Resistance Season 2", "type": "show", "tvdbId": 347428, "season": 2 },
-  { "title": "Star Wars: Episode VII - The Force Awakens", "type": "movie", "tmdbId": 140607 },
-  { "title": "Star Wars: Episode VIII - The Last Jedi", "type": "movie", "tmdbId": 181808 },
-  { "title": "Star Wars: Episode IX - The Rise of Skywalker", "type": "movie", "tmdbId": 181812 }
+  {
+    "title": "Star Wars: Episode I - The Phantom Menace",
+    "type": "movie",
+    "tmdbId": 1893
+  },
+  {
+    "title": "Star Wars: Episode II - Attack of the Clones",
+    "type": "movie",
+    "tmdbId": 1894
+  },
+  {
+    "title": "Star Wars: The Clone Wars Season 1",
+    "type": "show",
+    "tvdbId": 83268,
+    "season": 1
+  },
+  {
+    "title": "Star Wars: The Clone Wars Season 2",
+    "type": "show",
+    "tvdbId": 83268,
+    "season": 2
+  },
+  {
+    "title": "Star Wars: The Clone Wars Season 3",
+    "type": "show",
+    "tvdbId": 83268,
+    "season": 3
+  },
+  {
+    "title": "Star Wars: The Clone Wars Season 4",
+    "type": "show",
+    "tvdbId": 83268,
+    "season": 4
+  },
+  {
+    "title": "Star Wars: The Clone Wars Season 5",
+    "type": "show",
+    "tvdbId": 83268,
+    "season": 5
+  },
+  {
+    "title": "Star Wars: The Clone Wars Season 6",
+    "type": "show",
+    "tvdbId": 83268,
+    "season": 6
+  },
+  {
+    "title": "Star Wars: The Clone Wars Season 7",
+    "type": "show",
+    "tvdbId": 83268,
+    "season": 7
+  },
+  {
+    "title": "Star Wars: Episode III - Revenge of the Sith",
+    "type": "movie",
+    "tmdbId": 1895
+  },
+  {
+    "title": "Star Wars: The Bad Batch Season 1",
+    "type": "show",
+    "tvdbId": 114469,
+    "season": 1
+  },
+  {
+    "title": "Star Wars: The Bad Batch Season 2",
+    "type": "show",
+    "tvdbId": 114469,
+    "season": 2
+  },
+  {
+    "title": "Star Wars: The Bad Batch Season 3",
+    "type": "show",
+    "tvdbId": 114469,
+    "season": 3
+  },
+  {
+    "title": "Solo: A Star Wars Story",
+    "type": "movie",
+    "tmdbId": 348350
+  },
+  {
+    "title": "Obi-Wan Kenobi Season 1",
+    "type": "show",
+    "tvdbId": 114461,
+    "season": 1
+  },
+  {
+    "title": "Star Wars Rebels Season 1",
+    "type": "show",
+    "tvdbId": 283462,
+    "season": 1
+  },
+  {
+    "title": "Star Wars Rebels Season 2",
+    "type": "show",
+    "tvdbId": 283462,
+    "season": 2
+  },
+  {
+    "title": "Star Wars Rebels Season 3",
+    "type": "show",
+    "tvdbId": 283462,
+    "season": 3
+  },
+  {
+    "title": "Star Wars Rebels Season 4",
+    "type": "show",
+    "tvdbId": 283462,
+    "season": 4
+  },
+  {
+    "title": "Andor Season 1",
+    "type": "show",
+    "tvdbId": 382686,
+    "season": 1
+  },
+  {
+    "title": "Rogue One: A Star Wars Story",
+    "type": "movie",
+    "tmdbId": 330459
+  },
+  {
+    "title": "Star Wars: Episode IV - A New Hope",
+    "type": "movie",
+    "tmdbId": 11
+  },
+  {
+    "title": "Star Wars: Episode V - The Empire Strikes Back",
+    "type": "movie",
+    "tmdbId": 1891
+  },
+  {
+    "title": "Star Wars: Episode VI - Return of the Jedi",
+    "type": "movie",
+    "tmdbId": 1892
+  },
+  {
+    "title": "The Mandalorian Season 1",
+    "type": "show",
+    "tvdbId": 362036,
+    "season": 1
+  },
+  {
+    "title": "The Mandalorian Season 2",
+    "type": "show",
+    "tvdbId": 362036,
+    "season": 2
+  },
+  {
+    "title": "The Book of Boba Fett Season 1",
+    "type": "show",
+    "tvdbId": 393236,
+    "season": 1
+  },
+  {
+    "title": "The Mandalorian Season 3",
+    "type": "show",
+    "tvdbId": 362036,
+    "season": 3
+  },
+  {
+    "title": "Ahsoka Season 1",
+    "type": "show",
+    "tvdbId": 393239,
+    "season": 1
+  },
+  {
+    "title": "Star Wars Resistance Season 1",
+    "type": "show",
+    "tvdbId": 347428,
+    "season": 1
+  },
+  {
+    "title": "Star Wars Resistance Season 2",
+    "type": "show",
+    "tvdbId": 347428,
+    "season": 2
+  },
+  {
+    "title": "Star Wars: Episode VII - The Force Awakens",
+    "type": "movie",
+    "tmdbId": 140607
+  },
+  {
+    "title": "Star Wars: Episode VIII - The Last Jedi",
+    "type": "movie",
+    "tmdbId": 181808
+  },
+  {
+    "title": "Star Wars: Episode IX - The Rise of Skywalker",
+    "type": "movie",
+    "tmdbId": 181812
+  }
 ]
