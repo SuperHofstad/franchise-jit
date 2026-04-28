@@ -53,3 +53,20 @@ To keep the deployment lightweight and simple:
 ### Phase 4: Quality of Life (QoL)
 - Real-time Logs (WebSockets).
 - Manual "Sync Now" triggers.
+
+### Phase 5: Kometa Integration & Settings
+- **Backend**:
+  - Direct access to `/kometa/franchise_jit_playlists.yml`.
+  - Toggle synchronization per timeline.
+- **Frontend**:
+  - Settings panel to toggle `KOMETA_SYNC_PLAYLISTS` and `KOMETA_SYNC_COLLECTIONS`.
+  - Checkboxes on the timeline list to determine which lists sync to Kometa.
+
+---
+
+## ⚙️ Configuration Persistence
+To support changing environment variables dynamically:
+1. **Defaults**: Loaded from Docker Environment Variables.
+2. **Persistence**: Changes made in the WebUI are saved to `/config/user_settings.json`.
+3. **Precedence**: On boot, Franchise-JIT loads Docker variables, then reads `user_settings.json` to overwrite them.
+
